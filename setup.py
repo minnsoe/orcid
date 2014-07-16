@@ -1,18 +1,4 @@
-from setuptools import setup, Command
-
-
-class PyTest(Command):
-    user_options = []
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import sys,subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
+from setuptools import setup
 
 
 _parameters = {
@@ -28,8 +14,7 @@ _parameters = {
 		'License :: OSI Approved :: BSD License',
 		'Programming Language :: Python :: 2.7'
 	],
-	'install_requires': ['rauth'],
-	'cmdclass': {'test': PyTest}
+	'install_requires': ['rauth']
 }
 
 
