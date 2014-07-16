@@ -1,0 +1,12 @@
+language: python
+
+python: 2.7
+
+env:
+    - PY_VER=py27
+
+install:
+    - pip install tox
+
+script:
+    - tox -e $PY_VER
