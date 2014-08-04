@@ -27,6 +27,10 @@ class Orcid(object):
         if self.client_secret is None:
             raise AuthError('authentication requires a client_secret')
 
+    def _check_redirect_uri(self, redirect_uri):
+        if redirect_uri == '':
+            raise ValueError('redirect_uri must not be empty')
+
     def _authorize_url_endpoint(self):
         if self.sandbox:
             return constants.AUTHORIZE_URL_SANDBOX
@@ -45,9 +49,10 @@ class Orcid(object):
         :param redirect_uri: redirection uri after authorization
         :type redirect_uri: str
         :returns: str -- url to request authorization code from ORCID
-        :raises: AuthError
+        :raises: AuthError, ValueError
         """
         self._check_if_credentials_are_set()
+        self._check_redirect_uri(redirect_uri)
         AUTHORIZE_URL = self._authorize_url_endpoint()
         params = {
             'client_id': self.client_id,
