@@ -37,7 +37,11 @@ class Orcid(object):
         else:
             return constants.AUTHORIZE_URL
 
-    def authorization_url(self, scope, redirect_uri):
+    def _add_optional_state_to_params(self, state, params):
+        if state is not None:
+            params['state'] = state
+
+    def authorization_url(self, scope, redirect_uri, state=None):
         """Provides a URL to request an ORCID authorization code.
 
         Client credentials (client_id and client_secret) must be set
@@ -60,9 +64,11 @@ class Orcid(object):
             'authorize_url': AUTHORIZE_URL
         }
         service = OAuth2Service(**params)
-        url = service.get_authorize_url(
-            scope=scope,
-            redirect_uri=redirect_uri,
-            response_type='code'
-        )
+        url_params = {
+            'scope': scope,
+            'redirect_uri': redirect_uri,
+            'response_type': 'code'
+        }
+        self._add_optional_state_to_params(state, url_params)
+        url = service.get_authorize_url(**url_params)
         return url

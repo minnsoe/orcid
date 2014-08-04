@@ -68,6 +68,24 @@ class TestAuthorizationURL(object):
 
         assert 'redirect_uri=URL' in query
 
+    def test_if_url_contains_optional_state(self, orcid_with_params):
+        url = orcid_with_params.authorization_url(
+            'SCOPE',
+            'URL',
+            state='STATE'
+        )
+        _, _, _, _, query, _ = urlparse(url)
+        assert 'state=STATE' in query
+
+    def test_url_optional_state_with_spaces(self, orcid_with_params):
+        url = orcid_with_params.authorization_url(
+            'SCOPE',
+            'URL',
+            state='STATE WITH SPACES'
+        )
+        _, _, _, _, query, _ = urlparse(url)
+        assert 'state=STATE+WITH+SPACES' in query
+
     def test_if_raises_for_bad_redirect_uri(self, orcid_with_params):
         with pytest.raises(ValueError):
             orcid_with_params.authorization_url('SCOPE', '')
