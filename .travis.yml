@@ -7,6 +7,10 @@ env:
 
 install:
     - pip install tox
+    - pip install coveralls
 
 script:
     - tox -e $PY_VER
+
+after_success:
+    coveralls
