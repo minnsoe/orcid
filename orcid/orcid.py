@@ -31,7 +31,7 @@ class Orcid(object):
         if redirect_uri == '':
             raise ValueError('redirect_uri must not be empty')
 
-    def _authorize_url_endpoint(self):
+    def _get_authorize_url_endpoint(self):
         if self.sandbox:
             return constants.AUTHORIZE_URL_SANDBOX
         else:
@@ -41,7 +41,7 @@ class Orcid(object):
         if state is not None:
             params['state'] = state
 
-    def authorization_url(self, scope, redirect_uri, state=None):
+    def create_authorization_url(self, scope, redirect_uri, state=None):
         """Provides a URL to request an ORCID authorization code.
 
         Client credentials (client_id and client_secret) must be set
@@ -57,11 +57,10 @@ class Orcid(object):
         """
         self._check_if_credentials_are_set()
         self._check_redirect_uri(redirect_uri)
-        AUTHORIZE_URL = self._authorize_url_endpoint()
         params = {
             'client_id': self.client_id,
             'client_secret': self.client_secret,
-            'authorize_url': AUTHORIZE_URL
+            'authorize_url': self._get_authorize_url_endpoint()
         }
         service = OAuth2Service(**params)
         url_params = {
