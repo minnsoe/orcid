@@ -46,7 +46,7 @@ class Orcid(object):
 
         Client credentials (client_id and client_secret) must be set
         before attempting to obtain an authorization_url.
-        :class:`AuthError` will be thrown if there are no credentials.
+        :exc:`AuthError` will be thrown if there are no credentials.
 
         :param scope: ORCID access scope delimited with spaces
         :type scope: str
