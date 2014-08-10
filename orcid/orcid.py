@@ -7,6 +7,11 @@ from exceptions import AuthError
 
 
 class Orcid(object):
+    """ORCID Public API Service
+
+    Provides methods to upgrade API access using OAuth2 Three-Legged
+    authentication.
+    """
 
     def __init__(self, client_id=None, client_secret=None, sandbox=False):
         self.client_id = client_id
