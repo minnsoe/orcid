@@ -27,22 +27,26 @@ class Orcid(object):
         self._sandbox = bool(setting)
 
     def _check_if_credentials_are_set(self):
+        """Checks if client_id and client_secret are set."""
         if self.client_id is None:
             raise AuthError('authentication requires a client_id')
         if self.client_secret is None:
             raise AuthError('authentication requires a client_secret')
 
     def _check_redirect_uri(self, redirect_uri):
+        """Checks if redirect_uri is valid."""
         if redirect_uri == '':
             raise ValueError('redirect_uri must not be empty')
 
     def _get_authorize_url_endpoint(self):
+        """Provides the appropriate authorize_url for prod/sandbox."""
         if self.sandbox:
             return constants.AUTHORIZE_URL_SANDBOX
         else:
             return constants.AUTHORIZE_URL
 
     def _add_optional_state_to_params(self, state, params):
+        """Mutates params to add optional CSRF state."""
         if state is not None:
             params['state'] = state
 
