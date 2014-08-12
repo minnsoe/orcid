@@ -1,9 +1,13 @@
+# standard library
+from datetime import datetime
+
 # third party
 from rauth import OAuth2Service
 
 # local
 import constants
 from exceptions import AuthError
+from utils import Tokens
 
 
 class Orcid(object):
@@ -80,3 +84,25 @@ class Orcid(object):
         self._add_optional_state_to_params(state, url_params)
         url = service.get_authorize_url(**url_params)
         return url
+
+    def authorize_with_code(self, code):
+        tokens = Tokens('ACCESS','REFRESH', '10', datetime(2000,1,1,0,0,0,0))
+        params = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'sandbox': self.sandbox,
+            'tokens': tokens
+        }
+        return AuthorizedOrcid(**params)
+
+
+class AuthorizedOrcid(Orcid):
+
+    def __init__(self, client_id, client_secret, sandbox, tokens):
+        params = {
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'sandbox': sandbox
+        }
+        super(AuthorizedOrcid, self).__init__(**params)
+        self.tokens = tokens

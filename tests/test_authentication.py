@@ -1,3 +1,6 @@
+# standard library
+from datetime import datetime
+
 # third party
 import pytest
 from requests.utils import urlparse
@@ -89,3 +92,26 @@ class TestAuthorizationURL(object):
     def test_if_raises_for_bad_redirect_uri(self, orcid_with_params):
         with pytest.raises(ValueError):
             orcid_with_params.create_authorization_url('SCOPE', '')
+
+
+class TestAuthorize(object):
+
+    def test_authorize_with_code_returns_something(self, orcid_with_params):
+        assert orcid_with_params.authorize_with_code('CODE') is not None
+
+    def test_authorize_with_code_provides_copy(self, orcid_with_params):
+        original = id(orcid_with_params)
+        auth = id(orcid_with_params.authorize_with_code('CODE'))
+        assert original != auth
+
+    def test_authorize_with_code_provides_a_subclass(self, orcid_with_params):
+        auth = orcid_with_params.authorize_with_code('CODE')
+        assert issubclass(type(auth), Orcid)
+
+    def test_authorize_with_code_tokens(self, orcid_with_params):
+        auth = orcid_with_params.authorize_with_code('CODE')
+        tokens = auth.tokens
+        assert tokens.access == 'ACCESS'
+        assert tokens.refresh == 'REFRESH'
+        assert tokens.expires_in == '10'
+        assert tokens.timestamp == datetime(2000, 1, 1, 0, 0, 0, 0)
