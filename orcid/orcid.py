@@ -49,10 +49,27 @@ class Orcid(object):
         else:
             return constants.AUTHORIZE_URL
 
+    def _get_access_token_url_endpoint(self):
+        """Provides the appropriate token_url for prod/sandbox."""
+        if self.sandbox:
+            return constants.TOKEN_URL_SANDBOX
+        else:
+            return constants.TOKEN_URL
+
     def _add_optional_state_to_params(self, state, params):
         """Mutates params to add optional CSRF state."""
         if state is not None:
             params['state'] = state
+
+    def _create_service(self):
+        self._check_if_credentials_are_set()
+        params = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+            'authorize_url': self._get_authorize_url_endpoint(),
+            'access_token_url': self._get_access_token_url_endpoint()
+        }
+        return OAuth2Service(**params)
 
     def create_authorization_url(self, scope, redirect_uri, state=None):
         """Provides a URL to request an ORCID authorization code.
@@ -68,14 +85,8 @@ class Orcid(object):
         :returns: str -- url to request authorization code from ORCID
         :raises: AuthError, ValueError
         """
-        self._check_if_credentials_are_set()
         self._check_redirect_uri(redirect_uri)
-        params = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'authorize_url': self._get_authorize_url_endpoint()
-        }
-        service = OAuth2Service(**params)
+        service = self._create_service()
         url_params = {
             'scope': scope,
             'redirect_uri': redirect_uri,
