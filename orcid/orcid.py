@@ -96,12 +96,12 @@ class Orcid(object):
         url = service.get_authorize_url(**url_params)
         return url
 
-    def authorize_with_code(self, code):
+    def authorize_with_code(self, code, redirect_uri):
         service = self._create_service()
         token_params = {
             'code': code,
             'grant_type': 'authorization_code',
-            'redirect_uri': 'http://localhost'
+            'redirect_uri': redirect_uri
         }
         token_response = service.get_raw_access_token(data=token_params)
         tokens = json.loads(token_response.content)

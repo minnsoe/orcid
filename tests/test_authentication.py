@@ -110,7 +110,8 @@ def authorize_response_mock(orcid_with_params):
                              "scope":"SCOPE",\
                              "orcid":"ORCID"}',
                       status=200)
-        return orcid_with_params.authorize_with_code('CODE')
+        return orcid_with_params.authorize_with_code('CODE',
+                                                     'https://localhost')
 
     return orcid_with_params, run()
 
