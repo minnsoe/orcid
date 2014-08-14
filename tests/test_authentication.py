@@ -139,7 +139,8 @@ class TestAuthorize(object):
 
     def test_expires_on_calc(self, authorize_response_mock):
         service, auth = authorize_response_mock
+        assert auth.expires_on > datetime.now()
+
         expected = BASE_RESPONSE_DATETIME + timedelta(seconds=60)
         actual = auth._get_expires_on(BASE_RESPONSE_DATETIME, 60)
         assert actual == expected
-        assert auth.expires_on > datetime.now()
