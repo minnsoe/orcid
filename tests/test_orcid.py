@@ -29,7 +29,7 @@ class TestOrcid(object):
         assert service.sandbox == True
 
     def test_constructor_bad_sandbox_kwarg(self):
-        service = Orcid(sandbox='trololo')
+        service = Orcid(sandbox='cthulhu')
         assert service.sandbox is True
 
     def test_property_sandbox(self, orcid_without_params):

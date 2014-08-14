@@ -1,8 +1,9 @@
 # standard library
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # third party
 import pytest
+import responses
 from requests.utils import urlparse
 
 # local
@@ -94,24 +95,50 @@ class TestAuthorizationURL(object):
             orcid_with_params.create_authorization_url('SCOPE', '')
 
 
+BASE_RESPONSE_DATETIME = datetime(2000, 1, 1, 0, 0, 0, )
+
+
+@pytest.fixture
+def authorize_response_mock(orcid_with_params):
+
+    @responses.activate
+    def run():
+        responses.add(responses.POST, constants.TOKEN_URL,
+                      body='{"access_token":"ACCESS",\
+                             "refresh_token":"REFRESH",\
+                             "expires_in":3600,\
+                             "scope":"SCOPE",\
+                             "orcid":"ORCID"}',
+                      status=200)
+        return orcid_with_params.authorize_with_code('CODE')
+
+    return orcid_with_params, run()
+
+
 class TestAuthorize(object):
 
-    def test_authorize_with_code_returns_something(self, orcid_with_params):
-        assert orcid_with_params.authorize_with_code('CODE') is not None
+    def test_authorize_code_returns_something(self, authorize_response_mock):
+        service, auth = authorize_response_mock
+        assert auth is not None
 
-    def test_authorize_with_code_provides_copy(self, orcid_with_params):
-        original = id(orcid_with_params)
-        auth = id(orcid_with_params.authorize_with_code('CODE'))
-        assert original != auth
+    def test_authorize_code_provides_copy(self, authorize_response_mock):
+        original, auth = authorize_response_mock
+        assert id(original) != id(auth)
 
-    def test_authorize_with_code_provides_a_subclass(self, orcid_with_params):
-        auth = orcid_with_params.authorize_with_code('CODE')
+    def test_authorize_code_provides_subclass(self, authorize_response_mock):
+        service, auth = authorize_response_mock
         assert issubclass(type(auth), Orcid)
 
-    def test_authorize_with_code_tokens(self, orcid_with_params):
-        auth = orcid_with_params.authorize_with_code('CODE')
-        tokens = auth.tokens
-        assert tokens.access == 'ACCESS'
-        assert tokens.refresh == 'REFRESH'
-        assert tokens.expires_in == '10'
-        assert tokens.timestamp == datetime(2000, 1, 1, 0, 0, 0, 0)
+    def test_authorize_with_code_tokens(self, authorize_response_mock):
+        service, auth = authorize_response_mock
+        assert auth.access_token == 'ACCESS'
+        assert auth.refresh_token == 'REFRESH'
+        assert auth.expires_in == 3600
+        assert isinstance(auth.expires_on, datetime)
+
+    def test_expires_on_calc(self, authorize_response_mock):
+        service, auth = authorize_response_mock
+        expected = BASE_RESPONSE_DATETIME + timedelta(seconds=60)
+        actual = auth._get_expires_on(BASE_RESPONSE_DATETIME, 60)
+        assert actual == expected
+        assert auth.expires_on > datetime.now()

@@ -1,5 +1,6 @@
 # standard library
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 
 # third party
 from rauth import OAuth2Service
@@ -7,7 +8,6 @@ from rauth import OAuth2Service
 # local
 import constants
 from exceptions import AuthError
-from utils import Tokens
 
 
 class Orcid(object):
@@ -97,7 +97,15 @@ class Orcid(object):
         return url
 
     def authorize_with_code(self, code):
-        tokens = Tokens('ACCESS','REFRESH', '10', datetime(2000,1,1,0,0,0,0))
+        service = self._create_service()
+        token_params = {
+            'code': code,
+            'grant_type': 'authorization_code',
+            'redirect_uri': 'http://localhost'
+        }
+        token_response = service.get_raw_access_token(data=token_params)
+        tokens = json.loads(token_response.content)
+        tokens['timestamp'] = datetime.now()
         params = {
             'client_id': self.client_id,
             'client_secret': self.client_secret,
@@ -116,4 +124,30 @@ class AuthorizedOrcid(Orcid):
             'sandbox': sandbox
         }
         super(AuthorizedOrcid, self).__init__(**params)
-        self.tokens = tokens
+        self._process_tokens(tokens)
+
+    def _process_tokens(self, tokens):
+        self._access_token = tokens['access_token']
+        self._refresh_token = tokens['refresh_token']
+        self._expires_in = tokens['expires_in']
+        self._expires_on = self._get_expires_on(tokens['timestamp'],
+                                                self._expires_in)
+
+    def _get_expires_on(self, timestamp, expires_in):
+        return timestamp + timedelta(seconds=expires_in)
+
+    @property
+    def access_token(self):
+        return self._access_token
+
+    @property
+    def refresh_token(self):
+        return self._refresh_token
+
+    @property
+    def expires_in(self):
+        return self._expires_in
+
+    @property
+    def expires_on(self):
+        return self._expires_on
