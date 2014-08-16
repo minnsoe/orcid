@@ -146,10 +146,11 @@ class AuthorizedOrcid(Orcid):
         self._access_token = tokens['access_token']
         self._refresh_token = tokens['refresh_token']
         self._expires_in = tokens['expires_in']
-        self._expires_on = self._get_expires_on(tokens['timestamp'],
-                                                self._expires_in)
+        self._expires_on = self._calculate_expires_on(tokens['timestamp'],
+                                                      self._expires_in)
 
-    def _get_expires_on(self, timestamp, expires_in):
+    def _calculate_expires_on(self, timestamp, expires_in):
+        """Calculates expires_on datetime from expires_in seconds."""
         return timestamp + timedelta(seconds=expires_in)
 
     @property

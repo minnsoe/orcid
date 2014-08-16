@@ -142,5 +142,5 @@ class TestAuthorize(object):
         assert auth.expires_on > datetime.now()
 
         expected = BASE_RESPONSE_DATETIME + timedelta(seconds=60)
-        actual = auth._get_expires_on(BASE_RESPONSE_DATETIME, 60)
+        actual = auth._calculate_expires_on(BASE_RESPONSE_DATETIME, 60)
         assert actual == expected
