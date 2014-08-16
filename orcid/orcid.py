@@ -11,7 +11,7 @@ from exceptions import AuthError
 
 
 class Orcid(object):
-    """ORCID Public API Service
+    """ORCID API Service Wrapper for Members
 
     Provides methods to upgrade API access using OAuth2 Three-Legged
     authentication.
@@ -62,6 +62,7 @@ class Orcid(object):
             params['state'] = state
 
     def _create_service(self):
+        """Provide an OAuth2Service instance configured with details."""
         self._check_if_credentials_are_set()
         params = {
             'client_id': self.client_id,
@@ -97,6 +98,20 @@ class Orcid(object):
         return url
 
     def authorize_with_code(self, code, redirect_uri):
+        """Provides an authenticated instance from a one-time code.
+
+        Given an ORCID authorization code and redirect_uri, this method
+        will provide an authenticated ORCID instance. The instance
+        returned provides additional methods to perform requests that
+        require prior authentication.
+
+        :param code: One-time code from ORCID return callback
+        :type code: str
+        :param redirect_uri: redirection uri used to obtain code
+        :type redirect_uri: str
+        :returns: AuthorizedOrcid -- authenticated object with tokens
+        :raises: AuthError
+        """
         service = self._create_service()
         token_params = {
             'code': code,
@@ -116,6 +131,7 @@ class Orcid(object):
 
 
 class AuthorizedOrcid(Orcid):
+    """Authenticated ORCID API Service Wrapper for Members"""
 
     def __init__(self, client_id, client_secret, sandbox, tokens):
         params = {
