@@ -131,7 +131,11 @@ class Orcid(object):
 
 
 class AuthorizedOrcid(Orcid):
-    """Authenticated ORCID API Service Wrapper for Members"""
+    """Authenticated ORCID API Service Wrapper for Members
+
+    Provides methods and properties related to ORCID authentication
+    state.
+    """
 
     def __init__(self, client_id, client_secret, sandbox, tokens):
         params = {
@@ -143,6 +147,7 @@ class AuthorizedOrcid(Orcid):
         self._process_tokens(tokens)
 
     def _process_tokens(self, tokens):
+        """Set object properties from tokens."""
         self._access_token = tokens['access_token']
         self._refresh_token = tokens['refresh_token']
         self._expires_in = tokens['expires_in']
