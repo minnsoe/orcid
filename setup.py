@@ -24,11 +24,12 @@ _parameters = {
     'maintainer_email': 'contributions@minn.so',
     'license': 'BSD',
     'packages': ['orcid'],
+    'package_data': {'orcid': ['xml_templates/*']},
     'classifiers': [
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2.7'
     ],
-    'install_requires': ['rauth'],
+    'install_requires': ['jinja2','rauth'],
     'tests_require': ['tox'],
     'cmdclass' : {'test' : Tox}
 }
