@@ -105,7 +105,7 @@ class Orcid(object):
         returned provides additional methods to perform requests that
         require prior authentication.
 
-        :param code: One-time code from ORCID return callback
+        :param code: one-time code from ORCID return callback
         :type code: str
         :param redirect_uri: redirection uri used to obtain code
         :type redirect_uri: str
@@ -135,6 +135,15 @@ class AuthorizedOrcid(Orcid):
 
     Provides methods and properties related to ORCID authentication
     state.
+
+    :param client_id: client ID provided by ORCID
+    :type client_id: str
+    :param client_secret: client secret provided by ORCID
+    :type client_secret: str
+    :param sandbox: use sandbox API endpoints
+    :type sandbox: bool
+    :param tokens: ORCID tokens
+    :type tokens: dict
     """
 
     def __init__(self, client_id, client_secret, sandbox, tokens):
