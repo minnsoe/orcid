@@ -17,6 +17,9 @@ operates within a tight scope and not all features should be included
 with this library. Discussion is mutually preferred over rejected pull
 requests.
 
+Contributors:
+  * Mateusz Susik (@MSusik)
+
 ### License ###
 BSD. For specifics, please read the [license](LICENSE) included in
 the root folder of this repository.
