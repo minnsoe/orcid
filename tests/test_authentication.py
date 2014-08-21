@@ -100,6 +100,7 @@ BASE_RESPONSE_DATETIME = datetime(2000, 1, 1, 0, 0, 0, )
 
 @pytest.fixture
 def authorize_response_mock(orcid_with_params):
+    """Instances from mocked response for code to token exchange."""
 
     @responses.activate
     def run():
@@ -127,6 +128,7 @@ class TestAuthorize(object):
         assert id(original) != id(auth)
 
     def test_authorize_code_provides_subclass(self, authorize_response_mock):
+        """Test if authorization upgrades with a new Orcid instance."""
         service, auth = authorize_response_mock
         assert issubclass(type(auth), Orcid)
 
