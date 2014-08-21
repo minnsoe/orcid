@@ -8,7 +8,8 @@ Python library for interfacing with ORCID APIs.
 
 ### Overview ###
 **Work In Progress:** This is a python library for ORCID Members to
-interface with the ORCID API. Production and sandbox environments are
+interface with the ORCID API. The library will provide authentication
+and read/write operations support. Production and sandbox environments are
 supported.
 
 ### Contributions ###
