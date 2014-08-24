@@ -119,12 +119,9 @@ def authorize_response_mock(orcid_with_params):
 
 class TestAuthorize(object):
 
-    def test_authorize_code_returns_something(self, authorize_response_mock):
-        service, auth = authorize_response_mock
-        assert auth is not None
-
     def test_authorize_code_provides_copy(self, authorize_response_mock):
         original, auth = authorize_response_mock
+        assert auth is not None
         assert id(original) != id(auth)
 
     def test_authorize_code_provides_subclass(self, authorize_response_mock):
