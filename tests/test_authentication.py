@@ -134,6 +134,7 @@ class TestAuthorize(object):
         assert auth.access_token == 'ACCESS'
         assert auth.refresh_token == 'REFRESH'
         assert auth.expires_in == 3600
+        assert auth.orcid_user == "ORCID"
         assert isinstance(auth.expires_on, datetime)
 
     def test_expires_on_calc(self, authorize_response_mock):
